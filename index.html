@@ -3,50 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nassro Smart AI</title>
+    <title>NASSRO AI | الذكاء الخارق</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background: #0f172a; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
-        .chat-card { width: 95%; max-width: 550px; height: 85vh; background: #1e293b; border-radius: 30px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .chat-body { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: none; }
-        .bubble { padding: 14px 18px; border-radius: 20px; margin-bottom: 12px; max-width: 80%; font-size: 15px; line-height: 1.5; }
-        .ai-msg { background: #334155; color: #f1f5f9; align-self: flex-start; border-bottom-right-radius: 4px; }
-        .user-msg { background: #3b82f6; color: white; align-self: flex-end; border-bottom-left-radius: 4px; margin-right: auto; }
-        .hacker-mode { background: #000 !important; color: #00ff41 !important; border-color: #00ff41 !important; }
-        .hacker-bubble { background: rgba(0,255,65,0.05) !important; border: 1px solid #00ff41 !important; color: #00ff41 !important; font-family: monospace; }
-        #typing { font-size: 12px; color: #94a3b8; padding: 10px 20px; display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap');
+        
+        body { font-family: 'Cairo', sans-serif; background: #0f172a; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; transition: 0.8s; }
+        
+        /* تصميم الحاوية */
+        .app-card { width: 95%; max-width: 550px; height: 85vh; background: #1e293b; border-radius: 30px; border: 1px solid #334155; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; }
+
+        /* منطقة الدردشة */
+        .chat-body { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: none; display: flex; flex-direction: column; gap: 15px; }
+        .bubble { padding: 14px 18px; border-radius: 22px; max-width: 85%; font-size: 15px; line-height: 1.5; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .ai { background: #334155; color: #f1f5f9; align-self: flex-start; border-bottom-right-radius: 4px; }
+        .user { background: #3b82f6; color: white; align-self: flex-end; border-bottom-left-radius: 4px; }
+
+        /* تأثيرات وضع الهكر (Pro Mode) */
+        .hacker-active { background: #000 !important; border-color: #00ff41 !important; box-shadow: 0 0 40px rgba(0, 255, 65, 0.2); }
+        .hacker-bubble { background: rgba(0, 255, 65, 0.05) !important; border: 1px solid #00ff41 !important; color: #00ff41 !important; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 8px #00ff41; }
+        .hacker-text { color: #00ff41 !important; }
+
+        /* شريط التفكير */
+        #typing { font-size: 12px; color: #94a3b8; padding: 0 25px 10px; display: none; }
+
+        /* زر الإرسال */
+        .send-btn { width: 50px; height: 50px; background: #3b82f6; color: white; border-radius: 15px; transition: 0.3s; }
+        .send-btn:hover { transform: scale(1.05); }
+
+        /* شاشة التحويل */
+        #overlay { position: absolute; inset: 0; background: black; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; color: #00ff41; font-family: 'JetBrains Mono', monospace; }
+        .scanline { width: 100%; height: 2px; background: rgba(0, 255, 65, 0.3); position: absolute; animation: scan 2s infinite; }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
     </style>
 </head>
 <body>
 
-    <div id="app" class="chat-card transition-all duration-700">
-        <header id="header" class="p-5 border-b border-slate-700 flex justify-between items-center">
+    <div id="overlay">
+        <div class="scanline"></div>
+        <i class="fas fa-user-secret text-6xl mb-4 animate__animated animate__pulse animate__infinite"></i>
+        <div class="text-xl tracking-widest uppercase">Nassro Core Injecting...</div>
+        <div id="progress" class="mt-4 text-sm text-green-700">0%</div>
+    </div>
+
+    <div id="app" class="app-card animate__animated animate__fadeIn">
+        <header id="header" class="p-5 border-b border-slate-700 flex justify-between items-center transition-all">
             <div class="flex items-center gap-3">
-                <div id="iconBox" class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
-                    <i id="mainIcon" class="fas fa-robot"></i>
+                <div id="iconBox" class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg transition-all">
+                    <i id="mainIcon" class="fas fa-brain"></i>
                 </div>
                 <div>
-                    <h1 id="title" class="text-lg font-black text-white">NASSRO <span class="text-blue-500">AI</span></h1>
-                    <p id="statusTxt" class="text-[9px] text-green-500 uppercase font-bold tracking-widest">System Active</p>
+                    <h1 id="brand" class="text-lg font-black text-white tracking-tight">NASSRO <span class="text-blue-500">AI</span></h1>
+                    <p id="status" class="text-[9px] text-green-500 uppercase font-bold tracking-tighter">System Ready</p>
                 </div>
             </div>
         </header>
 
-        <div id="chat" class="chat-body flex flex-col">
-            <div class="bubble ai-msg animate__animated animate__fadeIn">
-                مرحباً بك! أنا مساعد نصرو الذكي. كيف يمكنني مساعدتك اليوم؟
+        <div id="chat" class="chat-body">
+            <div class="bubble ai animate__animated animate__fadeInRight">
+                مرحباً بك! أنا مساعد نصرو الذكي. كيف يمكنني خدمتك اليوم؟ ✨
             </div>
         </div>
 
         <div id="typing">جاري التفكير...</div>
 
-        <footer class="p-4 bg-slate-800/50">
-            <div id="inputWrapper" class="bg-slate-900 rounded-2xl flex p-2 border border-slate-700 focus-within:border-blue-500 transition shadow-inner">
-                <input type="text" id="userInput" onkeydown="checkEnter(event)" placeholder="اكتب سؤالك هنا..." class="flex-1 bg-transparent p-3 outline-none text-white font-medium">
-                <button onclick="ask()" id="sendBtn" class="w-12 h-12 bg-blue-600 text-white rounded-xl transition hover:scale-105 active:scale-95 flex items-center justify-center shadow-lg">
+        <footer class="p-5 bg-slate-800/30">
+            <div id="inputBox" class="bg-slate-900 rounded-2xl flex p-1 border border-slate-700 focus-within:border-blue-500 transition-all overflow-hidden">
+                <input type="text" id="userInput" onkeydown="handleEnter(event)" placeholder="اسألني عن أي شيء..." class="flex-1 bg-transparent p-4 outline-none text-white font-medium">
+                <button onclick="sendMessage()" id="sendBtn" class="send-btn flex items-center justify-center">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -55,33 +81,32 @@
 
     <script>
         const SECRET = "0948";
-        let isHacker = false;
+        let isPro = false;
 
-        // وظيفة التحقق من ضغط زر Enter
-        function checkEnter(event) {
-            if (event.key === "Enter") {
-                ask();
-            }
+        // دعم زر Enter
+        function handleEnter(e) {
+            if (e.key === "Enter") sendMessage();
         }
 
+        // مخ الردود
         const brain = {
-            "السلام": "وعليكم السلام! نورت منصة نصرو للذكاء الاصطناعي.",
-            "من صنعك": "أنا من برمجة المبدع نصرو، تم تطويري لأكون مساعدك المخلص.",
-            "اسمك": "اسمي Nassro Smart AI، مساعدك الرقمي المطور في الجزائر.",
-            "برمجة": "البرمجة هي قوة نصرو الحقيقية، ويمكنني مساعدتك في تعلمها!",
-            "شكرا": "العفو! أنا دائماً هنا لمساعدتك."
+            "السلام": "وعليكم السلام! نورت عالم نصرو البرمجي.",
+            "من صنعك": "أنا فخور بأنني من ابتكار المبرمج نصرو.",
+            "اسمك": "اسمي Nassro Smart AI، النسخة الأكثر تطوراً في الجزائر لعام 2026.",
+            "برمجة": "البرمجة هي لغة الإبداع، وأنا هنا لأبرمج معك أي فكرة!",
+            "شكرا": "في الخدمة دائماً! لا تتردد فيؤ سؤالي."
         };
 
-        function ask() {
+        function sendMessage() {
             const input = document.getElementById('userInput');
             const val = input.value.trim();
             if(!val) return;
 
-            addMsg(val, 'user-msg');
-            input.value = ""; // مسح الخانة بعد الإرسال
+            addBubble(val, 'user');
+            input.value = "";
 
             if(val === SECRET) {
-                activateHacker();
+                triggerTransformation();
                 return;
             }
 
@@ -89,43 +114,68 @@
 
             setTimeout(() => {
                 document.getElementById('typing').style.display = "none";
-                let reply = "بصفتي ذكاءً اصطناعياً، أجد أن موضوع '" + val + "' مثير للاهتمام. هل تود أن نتعمق فيه؟";
+                let response = "بصفتي ذكاءً اصطناعياً، أجد أن موضوع '" + val + "' يحتاج لتحليل أعمق. هل تود أن نبدأ بذلك؟";
                 
                 for (let key in brain) {
-                    if (val.includes(key)) { reply = brain[key]; break; }
+                    if (val.includes(key)) { response = brain[key]; break; }
                 }
 
-                if(isHacker) {
-                    reply = "🚨 يتم الآن تحليل '" + val + "' في وضع الاختراق وتوليد الكود الخارق...";
-                    generateCodeStream();
+                if(isPro) {
+                    response = "🚨 وضع الهكر: جاري تحليل " + val + " وتوليد 10,000 سطر كود عالي التشفير...";
+                    startGhostStream();
                 }
 
-                addMsg(reply, 'ai-msg');
+                addBubble(response, 'ai');
             }, 800);
         }
 
-        function activateHacker() {
-            isHacker = true;
-            document.getElementById('app').classList.add('hacker-mode', 'animate__animated', 'animate__headShake');
-            document.getElementById('header').classList.add('hacker-mode');
-            document.getElementById('inputWrapper').classList.add('hacker-mode');
-            document.getElementById('title').innerHTML = "NASSRO <span style='color:white'>GHOST</span>";
-            document.getElementById('mainIcon').className = "fas fa-user-secret text-black";
+        function triggerTransformation() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = "flex";
+            let p = 0;
+            const timer = setInterval(() => {
+                p += 5;
+                document.getElementById('progress').innerText = p + "%";
+                if(p >= 100) {
+                    clearInterval(timer);
+                    overlay.style.display = "none";
+                    activateProMode();
+                }
+            }, 50);
+        }
+
+        function activateProMode() {
+            isPro = true;
+            document.body.style.background = "#050505";
+            document.getElementById('app').classList.add('hacker-active', 'animate__animated', 'animate__flash');
+            document.getElementById('header').style.borderColor = "#00ff41";
+            document.getElementById('brand').innerHTML = "SYSTEM <span style='color:white'>GHOST</span>";
+            document.getElementById('brand').style.color = "#00ff41";
             document.getElementById('iconBox').style.background = "#00ff41";
+            document.getElementById('mainIcon').className = "fas fa-skull text-black";
+            document.getElementById('status').innerText = "ROOT ACCESS: GRANTED";
+            document.getElementById('status').className = "text-[9px] text-green-500 uppercase font-bold tracking-widest";
+            document.getElementById('inputBox').className = "bg-black border border-green-500 rounded-2xl flex p-1 hacker-active";
             document.getElementById('sendBtn').style.background = "#00ff41";
             document.getElementById('sendBtn').style.color = "#000";
-            addMsg("⚠️ تم الدخول لوضع السيادة الكاملة. أنا جاهز لتنفيذ الأوامر المستحيلة.", "hacker-bubble");
+            
+            addBubble("⚠️ تم تفعيل النسخة المحترفة. وضع الهكر.", "ai");
         }
 
-        function generateCodeStream() {
-            // هنا يمكنك إضافة عداد الأسطر كما فعلنا سابقاً
+        function startGhostStream() {
+            // تأثير عداد الأسطر الوهمي
+            let l = 0;
+            const s = setInterval(() => {
+                l += 250;
+                if(l >= 10000) clearInterval(s);
+            }, 40);
         }
 
-        function addMsg(text, type) {
+        function addBubble(text, type) {
             const chat = document.getElementById('chat');
             const div = document.createElement('div');
             div.className = `bubble ${type} animate__animated animate__fadeInUp`;
-            if(isHacker) div.classList.add('hacker-bubble');
+            if(isPro) div.classList.add('hacker-bubble');
             div.innerText = text;
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
