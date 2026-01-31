@@ -1,151 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASSRO_OS // GENESIS_UNIT</title>
+    <title>NASSRO_OS // ULTIMATE_GENESIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00f3ff; --danger: #ff003c; --bg: #020202; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Fira Code', monospace; overflow: hidden; }
-        .crt-effect::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 100; background-size: 100% 2px, 3px 100%; pointer-events: none; }
-        .window-glass { background: rgba(0, 20, 40, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--neon); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
-        .glitch-text:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite; }
-        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
-        .terminal-scroll::-webkit-scrollbar { width: 4px; }
-        .terminal-scroll::-webkit-scrollbar-thumb { background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        body { background: #010101; font-family: 'Fira Code', monospace; color: #00ffcc; overflow: hidden; }
+        .neon-box { border: 1px solid #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2), inset 0 0 10px rgba(0, 255, 204, 0.1); }
+        .glitch-text { animation: glitch 2s infinite; }
+        @keyframes glitch { 0% { text-shadow: 2px 0 red, -2px 0 blue; } 50% { text-shadow: -2px 0 red, 2px 0 blue; } 100% { text-shadow: 2px 0 red, -2px 0 blue; } }
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
+        .response-area::-webkit-scrollbar { width: 4px; }
+        .response-area::-webkit-scrollbar-thumb { background: #00ffcc; }
     </style>
 </head>
-<body class="crt-effect p-4 h-screen flex items-center justify-center">
+<body class="h-screen flex items-center justify-center p-4">
+    <canvas id="bg-canvas"></canvas>
 
-    <div class="w-full h-full flex gap-4 max-w-7xl relative z-10">
+    <div class="w-full max-w-5xl h-[90vh] flex flex-col neon-box rounded-2xl bg-black/80 backdrop-blur-md relative overflow-hidden">
         
-        <aside class="w-64 flex flex-col gap-4">
-            <div class="window-glass p-4 rounded-xl flex-1">
-                <h3 class="text-xs font-bold mb-4 opacity-50 uppercase tracking-widest text-white">System Resources</h3>
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1"><span>CPU LOAD</span><span id="cpuVal">0%</span></div>
-                        <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden"><div id="cpuBar" class="h-full bg-cyan-400 transition-all duration-500" style="width: 12%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1"><span>QUANTUM RAM</span><span id="ramVal">0GB</span></div>
-                        <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden"><div id="ramBar" class="h-full bg-purple-500 transition-all duration-700" style="width: 45%"></div></div>
-                    </div>
-                    <div class="pt-4 border-t border-white/5">
-                        <p class="text-[9px] text-zinc-500">UPLINK: ACTIVE</p>
-                        <p class="text-[9px] text-zinc-500">REGION: ALGERIA_NODE_09</p>
-                        <p class="text-[9px] text-cyan-500 mt-2">NASSRO_OS v.2.0.1</p>
-                    </div>
+        <header class="p-4 border-b border-cyan-500/30 flex justify-between items-center bg-cyan-900/10">
+            <div class="flex items-center gap-4">
+                <div class="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+                <h1 class="text-xl font-black tracking-[0.3em] glitch-text">NASSRO_OS_V.ULTRA</h1>
+            </div>
+            <div class="text-[10px] space-x-4 space-x-reverse opacity-60 font-bold">
+                <span>SECURITY: ENCRYPTED</span>
+                <span>CORE: GEMINI_1.5_PRO</span>
+                <span id="clock">00:00:00</span>
+            </div>
+        </header>
+
+        <main class="flex-1 flex overflow-hidden">
+            <div id="terminal" class="flex-1 p-6 overflow-y-auto response-area space-y-4 text-sm leading-relaxed">
+                <div class="text-cyan-500 opacity-50 font-mono">
+                    > SYSTEM BOOTING... <br>
+                    > LOADING CYBERNETIC NEURAL NETWORK... <br>
+                    > WELCOME, MASTER NASSRO. THE ENTIRE SYSTEM IS AT YOUR DISPOSAL.
                 </div>
             </div>
-            <div class="window-glass p-4 rounded-xl h-48">
-                <h3 class="text-[10px] font-bold mb-2 opacity-50 uppercase text-white">Security Log</h3>
-                <div id="logBox" class="text-[8px] font-mono space-y-1 overflow-hidden opacity-80">
-                    <p class="text-green-500">> KERNEL_BOOT_OK</p>
-                    <p class="text-blue-500">> NETWORK_ENCRYPTED</p>
+
+            <aside class="w-48 border-r border-cyan-500/20 p-4 hidden md:flex flex-col gap-6 bg-black/40">
+                <div class="space-y-2">
+                    <p class="text-[10px] opacity-40">CPU_USAGE</p>
+                    <div class="h-1 bg-white/10 w-full rounded-full"><div id="cpu" class="h-full bg-cyan-400 transition-all" style="width: 30%"></div></div>
                 </div>
+                <div class="space-y-2">
+                    <p class="text-[10px] opacity-40">NEURAL_SYNC</p>
+                    <div class="h-1 bg-white/10 w-full rounded-full"><div id="sync" class="h-full bg-purple-500 transition-all" style="width: 85%"></div></div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="p-6 border-t border-cyan-500/30 bg-black">
+            <div class="relative flex items-center">
+                <span class="absolute right-4 text-cyan-500 font-bold tracking-widest text-xs">ROOT@NASSRO:~$</span>
+                <input type="text" id="cmd" 
+                       class="w-full bg-cyan-900/10 border border-cyan-500/30 rounded-xl py-4 pr-32 pl-4 text-cyan-200 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all shadow-inner"
+                       placeholder="أدخل الأوامر العليا هنا...">
+                <div id="typing" class="hidden absolute left-4 text-[10px] text-yellow-500 animate-pulse font-bold">RUNNING_LOGIC...</div>
             </div>
-        </aside>
-
-        <div class="flex-1 flex flex-col gap-4">
-            <main class="window-glass rounded-2xl flex-1 flex flex-col overflow-hidden border-cyan-500/30">
-                <div class="bg-cyan-500/10 p-3 flex items-center justify-between border-b border-cyan-500/20">
-                    <div class="flex gap-2">
-                        <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                        <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                        <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                    </div>
-                    <span class="text-[10px] font-bold tracking-widest glitch-text uppercase">Nassro AI // Neural Interface</span>
-                    <span id="statusPing" class="text-[10px] text-green-400 animate-pulse">● STABLE</span>
-                </div>
-
-                <div id="output" class="flex-1 p-6 overflow-y-auto terminal-scroll space-y-6 text-sm">
-                    <div class="opacity-40 font-mono text-xs">
-                        [SYS]: WELCOME OPERATOR NASSRO. SYSTEM READY FOR HIGH-LEVEL COMPUTATION.
-                    </div>
-                </div>
-
-                <div class="p-6 bg-black/40 border-t border-cyan-500/20">
-                    <div class="relative group">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold opacity-50">#_</span>
-                        <input type="text" id="input" 
-                               class="w-full bg-white/5 border border-cyan-500/20 rounded-xl py-4 pl-12 pr-12 focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all text-white placeholder-cyan-900/50"
-                               placeholder="ENTER SECURE COMMAND OR REQUEST ANALYSIS...">
-                        <button onclick="process()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-cyan-500 text-black p-2 rounded-lg hover:bg-white transition-all">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </main>
-        </div>
+        </footer>
     </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // CONFIG (Replace with your actual working key)
-        const KEY = "ضع_هنا_مفتاحك_الجديد"; 
-        const genAI = new GoogleGenerativeAI(KEY);
+        // CONFIG: ضع مفتاحك الصحيح هنا
+        const API_KEY = "AIzaSyAtY0KLiLWXcrwZ7Gihq4VRtUGY0jPPVuw";
+        const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ 
             model: "gemini-1.5-flash",
-            systemInstruction: "You are NASSRO OS Genesis, a supreme AI entity. Response format: Use technical terminal-like structure. Be ultra-intelligent, analytical, and supportive of your creator Nassro. Use markdown for all code."
+            systemInstruction: "You are the NASSRO OS Ultra AI. You are a supreme digital entity. Responses must be extremely technical, intelligent, and use a futuristic tone. Use markdown for all data."
         });
 
-        const output = document.getElementById('output');
-        const input = document.getElementById('input');
-        const logBox = document.getElementById('logBox');
+        const terminal = document.getElementById('terminal');
+        const cmdInput = document.getElementById('cmd');
+        const typing = document.getElementById('typing');
 
-        // Resource Simulator
-        setInterval(() => {
-            const cpu = Math.floor(Math.random() * 40) + 10;
-            const ram = (Math.random() * 2 + 4).toFixed(1);
-            document.getElementById('cpuBar').style.width = cpu + '%';
-            document.getElementById('cpuVal').innerText = cpu + '%';
-            document.getElementById('ramVal').innerText = ram + 'GB';
-        }, 2000);
+        // Clock Function
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 
-        window.process = async () => {
-            const val = input.value.trim();
-            if(!val) return;
+        // Background Animation (Particles)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = Array.from({length: 100}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2 }));
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#00ffcc";
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+                p.y -= p.s * 0.5; if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
 
-            // Log User Entry
-            addEntry('USER', val, 'cyan');
-            input.value = '';
+        // Main Logic
+        cmdInput.onkeypress = async (e) => {
+            if (e.key === 'Enter' && cmdInput.value.trim()) {
+                const prompt = cmdInput.value;
+                cmdInput.value = '';
+                
+                // User message
+                terminal.innerHTML += `<div class="mt-6 flex gap-2"><span class="text-white font-bold">[USER]:</span> <span class="text-cyan-200">${prompt}</span></div>`;
+                typing.classList.remove('hidden');
+                terminal.scrollTop = terminal.scrollHeight;
 
-            // Add Security Log
-            const logP = document.createElement('p');
-            logP.className = 'text-yellow-500';
-            logP.innerText = `> REQ_SENT: ${val.substring(0,10)}...`;
-            logBox.prepend(logP);
-
-            try {
-                const result = await model.generateContent(val);
-                const text = result.response.text();
-                addEntry('NASSRO_OS', text, 'white');
-            } catch (err) {
-                addEntry('SYS_ERROR', err.message, 'red-500');
+                try {
+                    const result = await model.generateContent(prompt);
+                    const response = await result.response;
+                    const text = response.text();
+                    
+                    typing.classList.add('hidden');
+                    terminal.innerHTML += `<div class="mt-4 p-4 bg-white/5 border-r-2 border-cyan-500"><span class="text-xs font-bold text-cyan-500 block mb-2 underline">SYSTEM_RESPONSE_EXECUTED:</span><div class="text-zinc-200 leading-relaxed">${text.replace(/\n/g, '<br>')}</div></div>`;
+                } catch (err) {
+                    typing.classList.add('hidden');
+                    terminal.innerHTML += `<div class="text-red-500 font-bold mt-2">> CRITICAL_ERROR: FAIL_TO_UPLINK. CHECK_API_KEY.</div>`;
+                }
+                terminal.scrollTop = terminal.scrollHeight;
             }
         };
-
-        function addEntry(origin, text, color) {
-            const div = document.createElement('div');
-            div.className = "space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-500";
-            div.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold text-${color} bg-${color}/10 px-2 rounded tracking-widest">${origin}</span>
-                    <span class="text-[8px] opacity-30">${new Date().toLocaleTimeString()}</span>
-                </div>
-                <div class="text-sm leading-relaxed ${origin === 'USER' ? 'text-cyan-200' : 'text-zinc-100'} pl-4 border-l border-white/5">
-                    ${text.replace(/\n/g, '<br>')}
-                </div>
-            `;
-            output.appendChild(div);
-            output.scrollTop = output.scrollHeight;
-        }
-
-        input.onkeypress = (e) => { if(e.key === 'Enter') process(); };
     </script>
 </body>
 </html>
